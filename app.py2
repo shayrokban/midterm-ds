@@ -1,0 +1,80 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+sns.set(style="whitegrid")
+
+# Load dataset
+file_path = '/content/drive/MyDrive/mental_health_dataset.csv'
+df = pd.read_csv(file_path)
+
+# Create age groups
+df['age_group'] = pd.cut(df['age'], bins=[18, 25, 35, 45, 55, 65],
+                         labels=['18–25', '26–35', '36–45', '46–55', '56–65'])
+
+# -------- INSIGHT 1: Distributions --------
+print("🔍 Insight 1: Distributions of age, stress, sleep, depression, and productivity.\n")
+numeric_vars = ['age', 'stress_level', 'sleep_hours', 'depression_score', 'productivity_score']
+for var in numeric_vars:
+    plt.figure(figsize=(10, 4))
+    sns.histplot(data=df, x=var, kde=True, bins=30, color='steelblue')
+    plt.title(f'Distribution of {var}')
+    plt.xlabel(var)
+    plt.ylabel('Count')
+    plt.show()
+
+# -------- INSIGHT 2: Depression Score by Gender --------
+print("🔍 Insight 2: Depression score distribution varies by gender.\n")
+plt.figure(figsize=(10, 4))
+sns.histplot(data=df, x='depression_score', hue='gender', kde=True, bins=30, multiple='stack')
+plt.title('Distribution of Depression Score by Gender')
+plt.xlabel('Depression Score')
+plt.ylabel('Count')
+plt.legend(title='Gender')
+plt.show()
+
+# -------- INSIGHT 3: Sleep vs. Stress --------
+print("🔍 Insight 3: Stress level decreases as sleep hours increase.\n")
+plt.figure(figsize=(10, 4))
+sns.regplot(data=df, x='sleep_hours', y='stress_level', scatter_kws={'alpha':0.3})
+plt.title('Stress Level vs. Sleep Hours')
+plt.xlabel('Sleep Hours')
+plt.ylabel('Stress Level')
+plt.show()
+
+# -------- INSIGHT 4: Sleep Hours by Treatment Seeking --------
+print("🔍 Insight 4: Sleep differs between those who seek treatment and those who don’t.\n")
+plt.figure(figsize=(8, 4))
+sns.barplot(data=df, x='seeks_treatment', y='sleep_hours', ci='sd')
+plt.title('Average Sleep Hours by Treatment Seeking')
+plt.xlabel('Seeks Treatment')
+plt.ylabel('Average Sleep Hours')
+plt.show()
+
+# -------- INSIGHT 5: Depression Score by Gender --------
+print("🔍 Insight 5: Gender groups show different distributions in depression scores.\n")
+plt.figure(figsize=(8, 4))
+sns.boxplot(data=df, x='gender', y='depression_score')
+plt.title('Depression Score by Gender')
+plt.xlabel('Gender')
+plt.ylabel('Depression Score')
+plt.xticks(rotation=45)
+plt.show()
+
+# -------- INSIGHT 6: Depression by Age Group --------
+print("🔍 Insight 6: Depression score changes across age groups.\n")
+plt.figure(figsize=(10, 4))
+sns.barplot(data=df, x='age_group', y='depression_score', ci='sd')
+plt.title('Average Depression Score by Age Group')
+plt.xlabel('Age Group')
+plt.ylabel('Depression Score')
+plt.show()
+
+# -------- INSIGHT 7: Productivity and Age --------
+print("🔍 Insight 7: Productivity score varies with age.\n")
+plt.figure(figsize=(10, 4))
+sns.regplot(data=df, x='age', y='productivity_score', scatter_kws={'alpha':0.2})
+plt.title('Productivity Score vs. Age')
+plt.xlabel('Age')
+plt.ylabel('Productivity Score')
+plt.show()
